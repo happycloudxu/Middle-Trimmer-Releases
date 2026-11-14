@@ -17,7 +17,7 @@ Get the executable from the [latest release](../../releases/latest).
 
 | Asset | Size | What it is |
 |---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 15.6 MiB (16,380,038 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
+| **`MiddleTrimmer.exe`** — start here | 14.7 MiB (15,431,139 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
 
 `MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
 app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
@@ -62,22 +62,24 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.6.5) | 16,380,038 | `3f37b5a302031346f14f991ca51fb0160b4640209154dcafce8290178934ad9e` |
+| `MiddleTrimmer.exe` (v1.6.6) | 15,431,139 | `fe4d36be718bdf21348403659dbc729dc07295b3be19cf21c95889bb92541e61` |
 
 The same checksum is repeated in the release notes, so a download can be verified against
 the page it came from.
 
 ## What's new
 
-**1.6.5** closes the empty band that used to sit under the drop area — the drop zone now
-fills the space down to the credit line and grows with the window instead of leaving a gap —
-and renames the title bar and taskbar entry to **Middle Trimmer - Cut Video Middle**, the
-name the application is registered under in the Microsoft Store. **1.6.4** made trimming
-work with whatever FFmpeg you already have: the app asks the FFmpeg it is about to run which
-H.264 encoder it carries and falls back from `libx264` to `libopenh264` or `h264_mf`, so an
-LGPL build no longer stops at the encode step. Trimming, the controls and the command-line
-options are unchanged. The [release notes](../../releases/latest) have the current version
-in full.
+**1.6.6** fixes the optional AI noise reduction on loud material. If the selected audio
+peaked at full scale, the stereo-to-mono downmix handed to MossFormer2 used to reach +3 dBFS
+and the pass aborted with *"Mono downmix reaches full scale; AI input would clip. Lower the
+source level first."* The downmix is now fed to the model about 1 dB below full scale and
+the measured gain restores the level afterwards, so those files trim instead of failing.
+When an AI trim does fail, the status line now leads with the real reason rather than
+*"command failed (…python.exe):"*. Output for material that already peaked at or below
+-1 dBFS is unchanged. **1.6.5** closed the empty band that used to sit under the drop area,
+and renamed the window and taskbar entry to **Middle Trimmer - Cut Video Middle**. **1.6.4**
+made trimming work with whatever FFmpeg you already have. The
+[release notes](../../releases/latest) have the current version in full.
 
 ## Privacy
 
