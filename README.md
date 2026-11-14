@@ -17,7 +17,7 @@ Get the executable from the [latest release](../../releases/latest).
 
 | Asset | Size | What it is |
 |---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 15.5 MiB (16,279,094 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
+| **`MiddleTrimmer.exe`** — start here | 15.6 MiB (16,380,038 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
 
 `MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
 app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
@@ -62,21 +62,22 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.4.0) | 16,279,094 | `37d2a697ba3bc786606707609a270c23481645699d5fbed921cfbdd3b1043a65` |
+| `MiddleTrimmer.exe` (v1.6.5) | 16,380,038 | `3f37b5a302031346f14f991ca51fb0160b4640209154dcafce8290178934ad9e` |
 
-The same checksum is repeated in the notes for each release, so a download from any version
-can be verified against its own release page.
+The same checksum is repeated in the release notes, so a download can be verified against
+the page it came from.
 
 ## What's new
 
-**1.4.0** credits the studio instead of a personal name: **Author: Dr. Xu's Studio** appears
-in the window's version line, the **About** dialog, the built-in manual, `--version` and the
-file properties Windows shows for the executable (`CompanyName`, `LegalCopyright`). The
-version was bumped so this rebuilt binary can be told apart from 1.3.0. Trimming, the
-controls and the command-line options are unchanged. **1.3.0** added the **About** dialog and
-renamed the executable to `MiddleTrimmer.exe` (it was `VideoTrimmer.exe` before), and removed
-the repository link from the app's own UI. The [release notes](../../releases/latest) have
-the full list.
+**1.6.5** closes the empty band that used to sit under the drop area — the drop zone now
+fills the space down to the credit line and grows with the window instead of leaving a gap —
+and renames the title bar and taskbar entry to **Middle Trimmer - Cut Video Middle**, the
+name the application is registered under in the Microsoft Store. **1.6.4** made trimming
+work with whatever FFmpeg you already have: the app asks the FFmpeg it is about to run which
+H.264 encoder it carries and falls back from `libx264` to `libopenh264` or `h264_mf`, so an
+LGPL build no longer stops at the encode step. Trimming, the controls and the command-line
+options are unchanged. The [release notes](../../releases/latest) have the current version
+in full.
 
 ## Privacy
 
