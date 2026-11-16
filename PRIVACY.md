@@ -2,7 +2,7 @@
 
 **Last updated: 15 November 2026**
 
-Middle-Trimmer ("Middle Trimmer" in the Microsoft Store) is a Windows desktop application published by Dr. Xu's Studio ("we", "us"). This policy covers Middle-Trimmer 1.6.3 and later, distributed through the Microsoft Store and as a direct download.
+Middle-Trimmer ("Middle Trimmer - Cut Video Middle" in the Microsoft Store) is a Windows desktop application published by Dr. Xu's Studio ("we", "us"). This policy covers Middle-Trimmer 1.6.3 and later, distributed through the Microsoft Store and as a direct download.
 
 ## Summary
 
