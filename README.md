@@ -17,7 +17,7 @@ Get the executable from the [latest release](../../releases/latest).
 
 | Asset | Size | What it is |
 |---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 14.7 MiB (15,449,737 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
+| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,477,478 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
 
 `MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
 app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
@@ -32,8 +32,10 @@ it and does not suppress that prompt.
 ## Install
 
 1. Download `MiddleTrimmer.exe` — single file, no Python needed.
-2. Run it from any folder. It writes nothing beside itself; the only new files are the
-   trimmed videos you ask for.
+2. Run it from any folder. It writes nothing beside itself: settings go to
+   `%APPDATA%\MiddleTrimmer\config.json`, and the two optional runtimes (AI noise
+   reduction, VLC preview) live under `%LOCALAPPDATA%\MiddleTrimmer` if you set them up.
+   The only other new files are the trimmed videos you ask for.
 3. If **FFmpeg was not found** appears in the status line, install FFmpeg or put
    `ffmpeg.exe` and `ffprobe.exe` next to the executable.
 
@@ -62,40 +64,48 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.6.7) | 15,449,737 | `580f5f0acb904141fca2ec32431c04a35451cfa2dd4cdfcec076670e84443624` |
+| `MiddleTrimmer.exe` (v1.6.8) | 15,477,478 | `eb8609eb64ee48baaf57f6b6180809748e797684dcd41fabf4e76b938dc758cc` |
 
 The same checksum is repeated in the release notes, so a download can be verified against
 the page it came from.
 
 ## What's new
 
-**1.6.7** puts a player inside the window. The drop zone becomes one as soon as a clip is
-loaded — a draggable seek bar, a `0:03.4 / 0:08.0` readout, a play button that pauses and
-resumes in place, and a close cross that puts the drop zone back — so you can watch what you
-are about to cut without leaving the app. **Start** and **End** each gain a **Use now**
-button that takes the current playhead position instead of a typed time. *Audio processing*
-can now run over the whole video rather than only the kept section, and the main button
-relabels itself to say what the next press will do — **Trim video**, **Reduce noise**,
-**Change volume** or **Reduce noise + volume**. The SECTION card moved beside the drop zone,
-the window is about 50 px shorter, and the bottom buttons line up in one row. A trim now
-writes to a temporary file and renames it only when the job finishes, so Cancel or a closed
-window can no longer leave a truncated file that looks complete. **1.6.6** fixes the
-optional AI noise reduction on loud material: when the audio peaked at full scale, the
-stereo-to-mono downmix handed to MossFormer2 reached +3 dBFS and the pass aborted with
-*"Mono downmix reaches full scale; AI input would clip. Lower the source level first."* The
-downmix is now fed to the model about 1 dB below full scale and the measured gain restores
-the level afterwards, so those files trim instead of failing, and a failure leads with the
-real reason rather than *"command failed (…python.exe):"*. **1.6.5** closed the empty band
-that used to sit under the drop area, and renamed the window and taskbar entry to **Middle
-Trimmer - Cut Video Middle**. **1.6.4** made trimming work with whatever FFmpeg you already
-have. The [release notes](../../releases/latest) have the current version in full.
+**1.6.8** can set up its own video preview. When no VLC is found, the status line offers **Set up
+video preview**: it downloads the official portable VLC 3.0.24 build for Windows x64 (about 79 MB,
+SHA-256 checked before anything is unpacked), unpacks it into `%LOCALAPPDATA%\MiddleTrimmer\vlc`
+and remembers that folder in `%APPDATA%\MiddleTrimmer\config.json`. No installer runs, no registry
+key is written and no administrator rights are needed, and a cancelled or failed run leaves nothing
+half-installed. The playback strip is now drawn with anti-aliased shapes, so the disc, the bar and
+the glyphs stay smooth at any size. There is a real **About** window with the version, edition,
+capabilities and the Windows version it is running on, plus a **Copy details** button for support
+reports. Only one optional-runtime dialog can run at a time, `config.json` is merged rather than
+replaced so setting up preview no longer forgets a configured AI environment (or the reverse), and
+an unwritable settings file is reported in words instead of failing quietly.
+
+Earlier releases: **1.6.7** put a player inside the window — a draggable seek bar, a
+`0:03.4 / 0:08.0` readout, a play button that pauses and resumes in place, a close cross that puts
+the drop zone back, and a **Use now** button beside Start and End that takes the playhead position.
+*Audio processing* can run over the whole video rather than only the kept section, and the main
+button relabels itself to say what the next press will do — **Trim video**, **Reduce noise**,
+**Change volume** or **Reduce noise + volume**. A trim writes to a temporary file and renames it only
+when the job finishes, so Cancel or a closed window cannot leave a truncated file that looks
+complete. **1.6.6** fixed the optional AI noise reduction on loud material, where the stereo-to-mono
+downmix reached full scale and the pass aborted; it is now fed to the model about 1 dB below full
+scale. **1.6.5** closed the empty band under the drop area and renamed the window and taskbar entry
+to **Middle Trimmer - Cut Video Middle**.
+
+This repository keeps one release, the current build. Older builds are retired here, so the
+[release page](../../releases/latest) and the checksums above always describe the same file.
 
 ## Privacy
 
-Middle Trimmer collects nothing. There is no account, no telemetry, no analytics, no
-advertising and no update ping, and the application makes no network requests of its own:
-everything it does happens on your PC with the local `ffmpeg`. Videos you trim are never
-uploaded.
+Middle Trimmer collects nothing. There is no account, no telemetry, no analytics, no advertising
+and no update ping, and trimming makes no network request at all: it runs the local `ffmpeg` and
+that is the whole job. The only times the application touches the network are the two optional
+runtimes you can ask it to set up — the AI noise-reduction environment and the VLC preview runtime
+— and each one downloads only after you press the button and confirm. Videos you trim are never
+uploaded. The full policy is [PRIVACY.md](PRIVACY.md).
 
 ## Issues and support
 
