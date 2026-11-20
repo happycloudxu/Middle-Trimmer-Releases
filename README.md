@@ -17,7 +17,7 @@ Get the executable from the [latest release](../../releases/latest).
 
 | Asset | Size | What it is |
 |---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,477,478 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
+| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,494,296 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
 
 `MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
 app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
@@ -64,26 +64,36 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.6.8) | 15,477,478 | `eb8609eb64ee48baaf57f6b6180809748e797684dcd41fabf4e76b938dc758cc` |
+| `MiddleTrimmer.exe` (v1.6.11) | 15,494,296 | `d2b21fbbaff14e9e96034dd25fd34deb8ac5866b70dd2543a9d2f8ba0a00945b` |
 
 The same checksum is repeated in the release notes, so a download can be verified against
 the page it came from.
 
 ## What's new
 
-**1.6.8** can set up its own video preview. When no VLC is found, the status line offers **Set up
-video preview**: it downloads the official portable VLC 3.0.24 build for Windows x64 (about 79 MB,
-SHA-256 checked before anything is unpacked), unpacks it into `%LOCALAPPDATA%\MiddleTrimmer\vlc`
-and remembers that folder in `%APPDATA%\MiddleTrimmer\config.json`. No installer runs, no registry
-key is written and no administrator rights are needed, and a cancelled or failed run leaves nothing
-half-installed. The playback strip is now drawn with anti-aliased shapes, so the disc, the bar and
-the glyphs stay smooth at any size. There is a real **About** window with the version, edition,
-capabilities and the Windows version it is running on, plus a **Copy details** button for support
-reports. Only one optional-runtime dialog can run at a time, `config.json` is merged rather than
-replaced so setting up preview no longer forgets a configured AI environment (or the reverse), and
-an unwritable settings file is reported in words instead of failing quietly.
+**1.6.11** cleans the audio of the part you keep instead of the whole file, and it stops re-encoding
+the picture when nothing is cut. The optional AI noise reduction used to run over the whole source
+before trimming, so cutting two minutes out of a 75-minute recording paid for almost an hour of
+inference and then threw nearly all of it away: the 60-second blocks the trim discards are now
+copied through instead of being sent to the model, and that job went from 14 minutes 32 seconds to
+2 minutes 19 seconds, leaving the 1080p encode as the rest. A volume or noise job with nothing cut
+now copies the video stream and re-encodes only the audio, so a **+20 dB** boost no longer doubles
+the file or quietly alters the picture. The progress bar advances during inference and shows a
+percentage with an elapsed and remaining estimate, so a long job no longer looks stuck, and
+`%LOCALAPPDATA%\MiddleTrimmer\logs\gui.log` records every start, finish, cancel and uncaught error:
+a window that vanishes without a message is no longer a mystery. AI setup also decodes the common
+Windows status codes (`0xC0000135` *a file it needs was not found*, `0xC0000022` *Windows blocked it
+from starting*) and names the remedy instead of showing a bare number. There is no Store package
+for this build; the signed MSIX from **1.6.10** stays the current Store edition.
 
-Earlier releases: **1.6.7** put a player inside the window — a draggable seek bar, a
+Earlier releases: **1.6.10** put the AI environment under the packaged app's own folder and
+reported a setup that dies before it can speak; **1.6.9** restored both setup buttons in the Store
+edition and made Cancel stop the download or pip cleanly; **1.6.8** set up the video preview itself
+(official portable VLC 3.0.24 for Windows x64, about 79 MB, SHA-256 checked before anything is
+unpacked, into `%LOCALAPPDATA%\MiddleTrimmer\vlc`), drew the playback strip with anti-aliased
+shapes, added a proper **About** window with the version, edition, capabilities and a **Copy
+details** button, and merged `config.json` instead of replacing it so setting up one optional
+runtime no longer forgets the other. **1.6.7** put a player inside the window — a draggable seek bar, a
 `0:03.4 / 0:08.0` readout, a play button that pauses and resumes in place, a close cross that puts
 the drop zone back, and a **Use now** button beside Start and End that takes the playhead position.
 *Audio processing* can run over the whole video rather than only the kept section, and the main
@@ -95,8 +105,8 @@ downmix reached full scale and the pass aborted; it is now fed to the model abou
 scale. **1.6.5** closed the empty band under the drop area and renamed the window and taskbar entry
 to **Middle Trimmer - Cut Video Middle**.
 
-This repository keeps one release, the current build. Older builds are retired here, so the
-[release page](../../releases/latest) and the checksums above always describe the same file.
+The checksums above describe the current build. Older builds may still be listed on the
+[release page](../../releases/latest); they are kept as published and are not updated.
 
 ## Privacy
 
