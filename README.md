@@ -17,7 +17,7 @@ Get the executable from the [latest release](../../releases/latest).
 
 | Asset | Size | What it is |
 |---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,494,296 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
+| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,532,572 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
 
 `MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
 app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
@@ -41,8 +41,9 @@ it and does not suppress that prompt.
 
 Then drag a video onto the window (or press **Browse…**), type the **Start** and **End** of
 the section (`90`, `1:30` or `01:02:03.5`), and press **Trim**. Leave *Keep only this part*
-unticked to delete the section, or tick it to keep just that part. **Quality** picks High
-(CRF 16), Balanced (CRF 20, default) or Smaller file (CRF 26); **Fast (no re-encode)** is
+unticked to delete the section, or tick it to keep just that part. **Quality** picks Visually
+lossless (CRF 18), Balanced (CRF 20), Smaller file (CRF 26, the default) or Smallest file
+(CRF 30); **Fast (no re-encode)** is
 near-instant but moves the cut forward to the next keyframe, so a little more than requested
 is removed.
 
@@ -64,14 +65,35 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.6.11) | 15,494,296 | `d2b21fbbaff14e9e96034dd25fd34deb8ac5866b70dd2543a9d2f8ba0a00945b` |
+| `MiddleTrimmer.exe` (v1.6.13) | 15,532,572 | `c9331bc8135db64ca15a0b58c9ad9677faa0de47ad33924840c82436de5bd10c` |
 
 The same checksum is repeated in the release notes, so a download can be verified against
 the page it came from.
 
 ## What's new
 
-**1.6.11** cleans the audio of the part you keep instead of the whole file, and it stops re-encoding
+**1.6.13** makes fast mode cut where you asked. A stream copy can only begin at a keyframe, and
+the app used to treat every frame the probe returned as one, so on a VP9 clip a cut at 2.5 s
+snapped to a non-keyframe and the copied piece still contained the whole section; the real
+keyframe flag is read now, each copied piece is checked to start on one, and a boundary only ever
+moves forward. Keyframe choice and the seek also share one clock measured from the earliest
+stream, so a video that starts at 1.32 s while its audio starts at 0 no longer splices 1.32 s
+early, and a length is measured as a length, so an MPEG transport stream that starts at 1.44 s
+keeps its last 34 frames. VP9 in MP4 may be copied again, an MPEG-2 program stream that the
+intermediate cannot be written to retries in MPEG-TS, repairing the video preview keeps your own
+files (a document beside `vlc.exe`, a `plugins\user-plugin.ini`) and accepts a hand-unpacked VLC,
+the window reads a file off the Tk thread and holds **Trim** while a new selection is loading, and
+a file that was saved but failed its read-back check is reported as saved instead of as an export
+failure.
+
+**1.6.12** makes volume a choice of three (leave it alone, normal speech level at -16 LUFS, or a
+number you type), gives each technical control a link that explains it in plain words, extends
+Quality from *Visually lossless* (18) to *Smallest file* (30) with 26 as the default, adds a
+**Reset** for the section, and moves VLC's start, stop and release calls to the player's own thread
+so closing Preview or the drop-box player no longer freezes the window. Every job writes `stage:`
+lines and `logs\crash.log` records native crash stacks.
+
+Earlier releases: **1.6.11** cleans the audio of the part you keep instead of the whole file, and it stops re-encoding
 the picture when nothing is cut. The optional AI noise reduction used to run over the whole source
 before trimming, so cutting two minutes out of a 75-minute recording paid for almost an hour of
 inference and then threw nearly all of it away: the 60-second blocks the trim discards are now
@@ -86,7 +108,7 @@ Windows status codes (`0xC0000135` *a file it needs was not found*, `0xC0000022`
 from starting*) and names the remedy instead of showing a bare number. There is no Store package
 for this build; the signed MSIX from **1.6.10** stays the current Store edition.
 
-Earlier releases: **1.6.10** put the AI environment under the packaged app's own folder and
+**1.6.10** put the AI environment under the packaged app's own folder and
 reported a setup that dies before it can speak; **1.6.9** restored both setup buttons in the Store
 edition and made Cancel stop the download or pip cleanly; **1.6.8** set up the video preview itself
 (official portable VLC 3.0.24 for Windows x64, about 79 MB, SHA-256 checked before anything is
