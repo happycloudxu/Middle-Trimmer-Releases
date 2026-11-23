@@ -17,7 +17,7 @@ Get the executable from the [latest release](../../releases/latest).
 
 | Asset | Size | What it is |
 |---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,535,436 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
+| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,536,352 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
 
 `MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
 app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
@@ -65,12 +65,24 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.6.14) | 15,535,436 | `515223a2c3f870f705dba8572808e059b03e01f7d050f6fd11241fe64c03d15a` |
+| `MiddleTrimmer.exe` (v1.6.15) | 15,536,352 | `3a2444289e092336a02bcda3be502d92fdd5c14004b976de1571d216d820e301` |
 
 The same checksum is repeated in the release notes, so a download can be verified against
 the page it came from.
 
 ## What's new
+
+**1.6.15** keeps the files a VLC repair could not read. A folder inside the old preview runtime
+that Windows refuses to list was skipped without a word, so the copy looked complete and the old
+folder was deleted with its contents; an incomplete carry-over now keeps the previous copy and
+the setup dialog says where it is. A video whose timestamps do not start at zero reports its real
+length: an MKV stamped to begin at 10 s with a subtitle track running to the end was measured as
+17 seconds instead of 7, so the Start and End boxes, the slider and the *past the end* check now
+use the container's own end times for Matroska and WebM (MP4 and MPEG-TS are unchanged). **Trim**
+waits only for the newest selection instead of for any read still running, so dropping a second
+file while the first sits on a sleeping drive no longer disables the button, and the Store
+packager accepts `-Version 1.6.15.0` as naming the same version as 1.6.15. No Store package ships
+with 1.6.15 either; the signed MSIX from **1.6.10** stays the current Store edition.
 
 **1.6.14** stops a window from refusing to close. With the optional AI setup running — or its
 dialog just gone — the close button raised an internal error before the window was destroyed, and
