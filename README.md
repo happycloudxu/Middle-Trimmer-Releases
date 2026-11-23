@@ -65,12 +65,19 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.6.15) | 15,536,352 | `3a2444289e092336a02bcda3be502d92fdd5c14004b976de1571d216d820e301` |
+| `MiddleTrimmer.exe` (v1.6.16) | 15,536,307 | `68e0acae0f7d255bcd97ca42e9d4172b42d3578a19c645029a7170084ba50463` |
 
 The same checksum is repeated in the release notes, so a download can be verified against
 the page it came from.
 
 ## What's new
+
+**1.6.16** makes the progress area say what the job is doing. The line under the bar kept reading
+*Measuring the sound level...* for a whole encode, because the loudness measurement before it
+reports no progress and the encode reported only its clock, and the bar filled to 100 % while the
+file was still being written out — a running job looked finished. The encode now names itself, and
+names the corrected gain when the AI pass retries, and the bar stops just short of the end until
+the file is in place.
 
 **1.6.15** keeps the files a VLC repair could not read. A folder inside the old preview runtime
 that Windows refuses to list was skipped without a word, so the copy looked complete and the old
