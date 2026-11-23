@@ -17,7 +17,7 @@ Get the executable from the [latest release](../../releases/latest).
 
 | Asset | Size | What it is |
 |---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,532,572 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
+| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,535,436 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
 
 `MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
 app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
@@ -65,12 +65,26 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.6.13) | 15,532,572 | `c9331bc8135db64ca15a0b58c9ad9677faa0de47ad33924840c82436de5bd10c` |
+| `MiddleTrimmer.exe` (v1.6.14) | 15,535,436 | `515223a2c3f870f705dba8572808e059b03e01f7d050f6fd11241fe64c03d15a` |
 
 The same checksum is repeated in the release notes, so a download can be verified against
 the page it came from.
 
 ## What's new
+
+**1.6.14** stops a window from refusing to close. With the optional AI setup running — or its
+dialog just gone — the close button raised an internal error before the window was destroyed, and
+every later close was ignored as well; closing now cancels the setup, tolerates a dialog that is
+already gone and always finishes. The manual says what actually happens to an existing output: it
+is replaced after the **Replace it?** prompt, not kept. Fast mode no longer offers `.m4v` codecs the
+ipod muxer cannot write (HEVC, AV1 and MPEG-2 used to pass the check and then die inside ffmpeg with
+*Could not find tag for codec*), an impossible output names its reason instead of reporting "no
+keyframe found", and a fast cut more than an hour into a long recording is no longer refused because
+the keyframe search reads the file's own duration. Cancelling — Ctrl+C, or closing the window — now
+terminates the encoder instead of leaving it writing a file nobody is waiting for, a missing output
+folder is reported by name instead of ending in a traceback, and a path containing an apostrophe no
+longer breaks the fast-mode concat list. No Store package ships with 1.6.14 either; the signed MSIX
+from **1.6.10** stays the current Store edition.
 
 **1.6.13** makes fast mode cut where you asked. A stream copy can only begin at a keyframe, and
 the app used to treat every frame the probe returned as one, so on a VP9 clip a cut at 2.5 s
@@ -105,8 +119,8 @@ percentage with an elapsed and remaining estimate, so a long job no longer looks
 `%LOCALAPPDATA%\MiddleTrimmer\logs\gui.log` records every start, finish, cancel and uncaught error:
 a window that vanishes without a message is no longer a mystery. AI setup also decodes the common
 Windows status codes (`0xC0000135` *a file it needs was not found*, `0xC0000022` *Windows blocked it
-from starting*) and names the remedy instead of showing a bare number. There is no Store package
-for this build; the signed MSIX from **1.6.10** stays the current Store edition.
+from starting*) and names the remedy instead of showing a bare number. There was no Store package
+for that build either; the signed MSIX from **1.6.10** stays the current Store edition.
 
 **1.6.10** put the AI environment under the packaged app's own folder and
 reported a setup that dies before it can speak; **1.6.9** restored both setup buttons in the Store
