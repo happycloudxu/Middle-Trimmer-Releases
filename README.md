@@ -17,7 +17,7 @@ Get the executable from the [latest release](../../releases/latest).
 
 | Asset | Size | What it is |
 |---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,536,352 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
+| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,539,149 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
 
 `MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
 app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
@@ -65,12 +65,23 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.6.16) | 15,536,307 | `68e0acae0f7d255bcd97ca42e9d4172b42d3578a19c645029a7170084ba50463` |
+| `MiddleTrimmer.exe` (v1.6.17) | 15,539,149 | `4643511b42c6e5b68d39f6d1fd3af0f636b41225b1c2b2358d5b5de74d54bc4c` |
 
 The same checksum is repeated in the release notes, so a download can be verified against
 the page it came from.
 
 ## What's new
+
+**1.6.17** makes a jump in the seek bar land in about half a second instead of seconds. A player
+has to decode forward from the keyframe before the jump, and the encoders were left to choose their
+own keyframe spacing: the LGPL FFmpeg inside the Store package falls back to `libopenh264`, which
+then writes a single keyframe at the very start of the file, so jumping into a two-minute 4K trim
+decoded the whole file first — fifteen seconds before the picture came back. Every encoder is now
+told to write a keyframe every two seconds, the interval following the frame rate, which brought
+that jump down to about 0.6 s and one at 15 s from 1.97 s to 0.50 s, and both the preview player
+and the main player benefit. A **Fast** stream copy still keeps the source's own spacing, so
+re-trim without it to get the denser keyframes. No Store package ships with 1.6.17 either; the
+signed MSIX from **1.6.10** stays the current Store edition.
 
 **1.6.16** makes the progress area say what the job is doing. The line under the bar kept reading
 *Measuring the sound level...* for a whole encode, because the loudness measurement before it
