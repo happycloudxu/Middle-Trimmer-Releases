@@ -33,8 +33,10 @@ it and does not suppress that prompt.
 
 1. Download `MiddleTrimmer.exe` — single file, no Python needed.
 2. Run it from any folder. It writes nothing beside itself: settings go to
-   `%APPDATA%\MiddleTrimmer\config.json`, and the two optional runtimes (AI noise
-   reduction, VLC preview) live under `%LOCALAPPDATA%\MiddleTrimmer` if you set them up.
+   `%APPDATA%\MiddleTrimmer\config.json`, and the three optional runtimes (AI noise
+   reduction, VLC preview, the x264 FFmpeg build behind **Use constant quality**) live in
+   your profile, under `%USERPROFILE%\.middle-trimmer` and `%LOCALAPPDATA%\MiddleTrimmer`,
+   if you set them up.
    The only other new files are the trimmed videos you ask for.
 3. If **FFmpeg was not found** appears in the status line, install FFmpeg or put
    `ffmpeg.exe` and `ffprobe.exe` next to the executable.
@@ -195,10 +197,11 @@ The checksums above describe the current build. Older builds may still be listed
 
 Middle Trimmer collects nothing. There is no account, no telemetry, no analytics, no advertising
 and no update ping, and trimming makes no network request at all: it runs the local `ffmpeg` and
-that is the whole job. The only times the application touches the network are the two optional
-runtimes you can ask it to set up — the AI noise-reduction environment and the VLC preview runtime
-— and each one downloads only after you press the button and confirm. Videos you trim are never
-uploaded. The full policy is [PRIVACY.md](PRIVACY.md).
+that is the whole job. The only times the application touches the network are the three optional
+runtimes you can ask it to set up — the AI noise-reduction environment, the VLC preview runtime
+and the x264 FFmpeg build that makes constant quality a real CRF number — and each one
+downloads only after you press the button and confirm. Videos you trim are never uploaded. The
+full policy is [PRIVACY.md](PRIVACY.md).
 
 ## Issues and support
 

@@ -1,6 +1,6 @@
 # Privacy Policy — Middle-Trimmer
 
-**Last updated: 22 November 2026**
+**Last updated: 25 November 2026**
 
 Middle-Trimmer ("Middle Trimmer - Cut Video Middle" in the Microsoft Store) is a Windows desktop application published by Dr. Xu's Studio ("we", "us"). This policy covers Middle-Trimmer 1.6.3 and later, distributed through the Microsoft Store and as a direct download.
 
@@ -53,21 +53,57 @@ What that installer downloads, when you choose it: the official portable VLC arc
 
 That is an ordinary file download. The servers involved see your IP address, as any download server does; they receive no information about your files or your usage. We do not control those servers and they handle that data under their own policies. Nothing is installed system-wide: no installer runs, no registry key is written and no administrator rights are needed. VLC belongs to the VideoLAN project and is licensed under the GNU GPL; it is not part of the application in any edition and is fetched only at your request.
 
+## Optional constant-quality encoding (x264)
+
+The FFmpeg bundled with the Store package is an LGPL build, so it has no x264, and the
+quality choices then become bitrate targets rather than a true constant quality. A download
+fixes that, and only a download: this application never ships x264, because x264 is GPL and
+the application is not.
+
+**If the FFmpeg in use already has x264** — any full build beside the app, on `PATH`,
+or one fetched earlier — a CRF number is a real constant quality and the button below
+is not even shown.
+
+**Both editions behave the same way.** When the encoder in use has no x264, "Use constant
+quality" appears in the status row and offers the pinned GPL build from
+`BtbN/FFmpeg-Builds` (version `n8.1.3-35-gf1acb0a266`, about 86 MB). You can equally install
+any FFmpeg build with x264 yourself and point `TRIM_MIDDLE_FFMPEG` at it.
+
+What that installer downloads, when you choose it:
+
+- the archive is verified against a pinned SHA-256 before anything is unpacked;
+- a corrupt, truncated or unexpected download is discarded, and nothing is installed;
+- the runtime is unpacked into a private folder, `%LOCALAPPDATA%\MiddleTrimmer\ffmpeg-gpl`
+  (`TRIM_MIDDLE_FFMPEG_GPL_ROOT` moves it);
+- the folder is only moved into place after the unpacked FFmpeg reports `libx264`, so
+  cancelling or failing leaves no half-installed copy behind.
+
+That is an ordinary file download. The servers involved see your IP address, as any download
+server does; they receive no information about your files or your usage. We do not control
+those servers and they handle that data under their own policies. Nothing is installed
+system-wide: no installer runs, no registry key is written and no administrator rights are
+needed. That build belongs to the FFmpeg-Builds project and is licensed under the GNU GPL; it
+is not part of the application in any edition and is fetched only at your request.
+
 ## Network requests
 
 - **Default use, either edition:** none. Trimming a video makes no network request at all - the Store package uses its bundled FFmpeg, and the direct-download build uses the FFmpeg beside the app or on PATH.
 - **If you run the AI setup:** the Python/PyPI/PyTorch downloads described above, plus one download of the model checkpoint from Hugging Face on first use of the AI mode.
 - **If you use an AI environment you configured yourself:** only the Hugging Face checkpoint download on first use, as described above.
 - **If you run the video-preview setup:** one download of the pinned VLC archive from `download.videolan.org`, as described above. Playing a clip afterwards makes no network request.
+- **If you run the constant-quality setup:** one download of the pinned GPL FFmpeg archive
+  from the `BtbN/FFmpeg-Builds` GitHub release, as described above. Encoding afterwards makes
+  no network request.
 
 There are no other outbound connections: no update check, no license check, no analytics endpoint, no advertising, no third-party SDK.
 
 ## Local storage
 
-- `%APPDATA%\MiddleTrimmer\config.json` — the small settings file written on first use. It records your preferences (for example the last-used folders and options) and which optional runtimes, if any, are configured: the `ai_python` key holds the AI environment's interpreter and `vlc_dir` holds the video-preview runtime folder. It contains no personal information beyond the folder paths you chose, and deleting it resets the application to defaults.
+- `%APPDATA%\MiddleTrimmer\config.json` — the small settings file written on first use. It records your preferences (for example the last-used folders and options) and which optional runtimes, if any, are configured: the `ai_python` key holds the AI environment's interpreter, `vlc_dir` holds the video-preview runtime folder and `ffmpeg_gpl_dir` holds the optional x264 FFmpeg folder. It contains no personal information beyond the folder paths you chose, and deleting it resets the application to defaults.
 - `%USERPROFILE%\.middle-trimmer\ai-env\` — the optional AI environment described above, including the downloaded model checkpoint (a few hundred MB). This folder exists only if you opted into AI noise reduction. It is deliberately **outside** the application's own folders and, in the Microsoft Store copy, outside the package's storage: this is what makes it survive an update, a reinstall or an uninstall. `TRIM_MIDDLE_AI_ROOT` moves it elsewhere in either edition.
 - `ai-setup.log`, in the folder that holds that environment — a short transcript of the last **Set up AI noise reduction** attempt: the commands run, their exit codes and the tail of their output. It is overwritten on every attempt, capped in size, and contains only what those commands printed.
 - `%LOCALAPPDATA%\MiddleTrimmer\vlc\` — the optional video-preview runtime described above, which takes noticeably more space on disk than the ~79 MB download. This folder exists only if you ran the video-preview setup.
+- `%LOCALAPPDATA%\MiddleTrimmer\ffmpeg-gpl\` — the optional x264 FFmpeg described above, about 200 MB unpacked. This folder exists only if you ran that setup.
 
 The application also reads the media files you open, and writes trimmed output and temporary working files to the folders involved in that operation. Temporary files are removed when the operation finishes.
 
@@ -79,6 +115,9 @@ You are never locked in. Each optional runtime is a folder you can delete, which
 
 - **AI noise reduction:** delete `%USERPROFILE%\.middle-trimmer\ai-env` (or whatever folder `TRIM_MIDDLE_AI_ROOT` points at). Note that uninstalling the application does not do this for you — the folder is outside the application's own storage on purpose, precisely so that reinstalling does not mean downloading it again — so removing the space is a manual step. Afterwards `AI MossFormer2` is simply unavailable again.
 - **Video preview:** delete `%LOCALAPPDATA%\MiddleTrimmer\vlc`. Afterwards preview uses a VLC you installed yourself if one is present, and otherwise offers to set one up again.
+- **Constant-quality encoding:** delete `%LOCALAPPDATA%\MiddleTrimmer\ffmpeg-gpl`. Afterwards
+  the CRF choices fall back to the bundled encoder's bitrate estimate, and the button offers
+  the download again.
 
 Optionally delete `%APPDATA%\MiddleTrimmer\config.json` as well, which clears both recorded paths and resets the application to defaults.
 
@@ -89,6 +128,12 @@ Nothing else depends on either folder: trimming, manual mode and every other fea
 The Microsoft Store package contains an unmodified, LGPL-licensed FFmpeg build (version `n8.1.3-35-gf1acb0a266`, from BtbN/FFmpeg-Builds) that runs as a separate local process. It is used only to read and write your media files and makes no network requests. Its licence and full attribution travel with the package as `third-party\FFmpeg-LICENSE.txt` and `third-party\FFmpeg-NOTICE.md`.
 
 VLC is separate again and ships with no edition of Middle-Trimmer. When you install VLC yourself, or the direct-download build fetches the official portable archive at your request, it is the VideoLAN build, licensed under the GNU General Public License, and it runs as a separate local process to draw the preview. The VideoLAN project publishes that build and its source code.
+
+x264 is separate again and ships with no edition of Middle-Trimmer. When a full GPL FFmpeg is
+already in use, or you fetch the pinned build at your request, it is the FFmpeg-Builds build,
+licensed under the GNU General Public License, and it runs as a separate local process to
+read and write your videos. The FFmpeg-Builds project publishes that build and its source
+code.
 
 ## Children
 
