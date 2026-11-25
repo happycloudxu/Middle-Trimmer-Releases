@@ -17,7 +17,7 @@ Get the executable from the [latest release](../../releases/latest).
 
 | Asset | Size | What it is |
 |---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 14.8 MiB (15,539,149 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
+| **`MiddleTrimmer.exe`** — start here | 14.9 MiB (15,580,293 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
 
 `MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
 app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
@@ -65,12 +65,29 @@ certutil -hashfile MiddleTrimmer.exe SHA256
 
 | Asset | Bytes | SHA-256 |
 |---|---|---|
-| `MiddleTrimmer.exe` (v1.6.17) | 15,539,149 | `4643511b42c6e5b68d39f6d1fd3af0f636b41225b1c2b2358d5b5de74d54bc4c` |
+| `MiddleTrimmer.exe` (v1.6.18) | 15,580,293 | `0d8363d34061d496b07af8d190081db5bfff77c654f138f4d4273581b8f07f18` |
 
 The same checksum is repeated in the release notes, so a download can be verified against
 the page it came from.
 
 ## What's new
+
+**1.6.18** gives the Preview window the same strip as the drop box - play/pause, the running time,
+the seek bar and close, with the full-screen button in between - and it loads the file and starts
+playing as soon as it opens, so the bar has a length to jump against; that button, a double-click on
+the picture or **F11** fills the screen and drops the border, a click there plays or pauses, and
+**Esc** or **F11** returns. It also ends the shake after a seek: one click on the bar used to send the
+same position twice, about 80 ms apart, and every request restarts libVLC, so the picture and the
+sound jumped twice before settling; one gesture now sends one seek, and the resume on the reported
+file went from 0.47 s to 0.38 s. The Store edition can finally use real constant quality: the LGPL
+FFmpeg it carries has no `libx264`, so a CRF choice fell back to a fixed bitrate, up to 4.7x the size
+of x264 on easy content; a **Use constant quality** button now offers the pinned GPL build (about
+86 MB, SHA-256 checked, unpacked under `%LOCALAPPDATA%\MiddleTrimmer\ffmpeg-gpl`) the way VLC and
+the AI runtime are offered, downloads it once, and switches over without a restart, and FFmpeg
+discovery prefers a build with `libx264` so an LGPL copy beside the executable no longer hides a
+full one on `PATH`. *Compact MP4 (Auto)* and *Lecture (Intel Quick Sync)* - the two fixed-bitrate
+presets - now read and encode only the kept sections instead of the whole file. No Store package
+ships with 1.6.18 either; the signed MSIX from **1.6.10** stays the current Store edition.
 
 **1.6.17** makes a jump in the seek bar land in about half a second instead of seconds. A player
 has to decode forward from the keyframe before the jump, and the encoders were left to choose their
