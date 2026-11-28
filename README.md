@@ -1,8 +1,4 @@
-# Middle Trimmer — downloadable builds
-
-**This repository hosts released builds only. It contains no source code.** The Middle
-Trimmer source lives in a private repository and is not published here, and nothing in
-this repository is imported, compiled or needed by the application.
+# Middle Trimmer
 
 Cut a section out of the middle of a video — or keep only a middle section — by dragging a
 file onto a window or with one command. Removing a range deletes it and splices the head and
@@ -11,35 +7,20 @@ on videos with no audio track, and stay frame-accurate because the default path 
 
 It is a thin wrapper around `ffmpeg`/`ffprobe`: no account, no cloud step, no upload.
 
-## Which file do I download?
-
-Get the executable from the [latest release](../../releases/latest).
-
-| Asset | Size | What it is |
-|---|---|---|
-| **`MiddleTrimmer.exe`** — start here | 14.9 MiB (15,580,293 bytes) | **The application.** Single Windows executable with Python, Tk and drag and drop inside: no installer, no Python install. Double-click it, then drop a video on the window |
-
-`MiddleTrimmer.exe` does **not** carry `ffmpeg`: a full ffmpeg build is far larger than the
-app. Put `ffmpeg.exe` and `ffprobe.exe` next to the executable to keep it portable, or make
-them findable on `PATH` (`winget install Gyan.FFmpeg`). The app says so in its status line
-when they are missing, and `TRIM_MIDDLE_FFMPEG` / `TRIM_MIDDLE_FFPROBE` override the lookup.
-
-Requires Windows. The executable is unsigned (there is no code-signing certificate), so
-SmartScreen may show **"Windows protected your PC"** on first run: choose **More info → Run
-anyway**. A matching SHA-256 proves the file left GitHub intact; it does not prove who built
-it and does not suppress that prompt.
-
 ## Install
 
-1. Download `MiddleTrimmer.exe` — single file, no Python needed.
-2. Run it from any folder. It writes nothing beside itself: settings go to
-   `%APPDATA%\MiddleTrimmer\config.json`, and the three optional runtimes (AI noise
-   reduction, VLC preview, the x264 FFmpeg build behind **Use constant quality**) live in
-   your profile, under `%USERPROFILE%\.middle-trimmer` and `%LOCALAPPDATA%\MiddleTrimmer`,
-   if you set them up.
-   The only other new files are the trimmed videos you ask for.
-3. If **FFmpeg was not found** appears in the status line, install FFmpeg or put
-   `ffmpeg.exe` and `ffprobe.exe` next to the executable.
+Install Middle Trimmer from the
+[Microsoft Store](https://apps.microsoft.com/detail/9PPC4L8F2GJJ). The package carries its own
+FFmpeg, so nothing else has to be installed first: no Python, no separate `ffmpeg.exe`, no
+unsigned-executable prompt, and the Store keeps it updated.
+
+The Store edition is whichever build last cleared certification; **About** shows the exact
+version you are running.
+
+Settings go to `%APPDATA%\MiddleTrimmer\config.json`. The three optional runtimes (AI noise
+reduction, VLC preview, the x264 FFmpeg build behind **Use constant quality**) live in your
+profile, under `%USERPROFILE%\.middle-trimmer` and `%LOCALAPPDATA%\MiddleTrimmer`, once you
+set them up; the only other new files are the trimmed videos you ask for.
 
 Then drag a video onto the window (or press **Browse…**), type the **Start** and **End** of
 the section (`90`, `1:30` or `01:02:03.5`), and press **Trim**. Leave *Keep only this part*
@@ -52,25 +33,18 @@ is removed.
 **Help** (`F1`) opens the built-in manual, and **About** shows the version, author and
 copyright of the build you are running.
 
-## Checksums
+## Optional runtimes
 
-Every asset is byte-identical to the file that was verified before release. Confirm after
-downloading:
+Each one downloads only after you press its button and confirm, and trimming never needs any
+of them:
 
-```powershell
-Get-FileHash .\MiddleTrimmer.exe -Algorithm SHA256
-```
-
-```cmd
-certutil -hashfile MiddleTrimmer.exe SHA256
-```
-
-| Asset | Bytes | SHA-256 |
-|---|---|---|
-| `MiddleTrimmer.exe` (v1.6.18) | 15,580,293 | `0d8363d34061d496b07af8d190081db5bfff77c654f138f4d4273581b8f07f18` |
-
-The same checksum is repeated in the release notes, so a download can be verified against
-the page it came from.
+- **Video preview** (about 79 MB) — the VLC runtime that plays the clip inside the window. If
+  VLC is already installed, that copy is used instead.
+- **AI noise reduction** — a Python environment with the MossFormer2 model, installed into
+  your own user folder.
+- **Use constant quality** — an FFmpeg build with `libx264` (about 86 MB, checked against a
+  pinned SHA-256) so the Quality choices are true CRF rather than a bitrate target. The FFmpeg
+  inside the Store package has no `libx264`, which is why this one is separate.
 
 ## What's new
 
@@ -88,8 +62,7 @@ of x264 on easy content; a **Use constant quality** button now offers the pinned
 the AI runtime are offered, downloads it once, and switches over without a restart, and FFmpeg
 discovery prefers a build with `libx264` so an LGPL copy beside the executable no longer hides a
 full one on `PATH`. *Compact MP4 (Auto)* and *Lecture (Intel Quick Sync)* - the two fixed-bitrate
-presets - now read and encode only the kept sections instead of the whole file. No Store package
-ships with 1.6.18 either; the signed MSIX from **1.6.10** stays the current Store edition.
+presets - now read and encode only the kept sections instead of the whole file.
 
 **1.6.17** makes a jump in the seek bar land in about half a second instead of seconds. A player
 has to decode forward from the keyframe before the jump, and the encoders were left to choose their
@@ -99,8 +72,7 @@ decoded the whole file first — fifteen seconds before the picture came back. E
 told to write a keyframe every two seconds, the interval following the frame rate, which brought
 that jump down to about 0.6 s and one at 15 s from 1.97 s to 0.50 s, and both the preview player
 and the main player benefit. A **Fast** stream copy still keeps the source's own spacing, so
-re-trim without it to get the denser keyframes. No Store package ships with 1.6.17 either; the
-signed MSIX from **1.6.10** stays the current Store edition.
+re-trim without it to get the denser keyframes.
 
 **1.6.16** makes the progress area say what the job is doing. The line under the bar kept reading
 *Measuring the sound level...* for a whole encode, because the loudness measurement before it
@@ -118,8 +90,7 @@ length: an MKV stamped to begin at 10 s with a subtitle track running to the end
 use the container's own end times for Matroska and WebM (MP4 and MPEG-TS are unchanged). **Trim**
 waits only for the newest selection instead of for any read still running, so dropping a second
 file while the first sits on a sleeping drive no longer disables the button, and the Store
-packager accepts `-Version 1.6.15.0` as naming the same version as 1.6.15. No Store package ships
-with 1.6.15 either; the signed MSIX from **1.6.10** stays the current Store edition.
+packager accepts `-Version 1.6.15.0` as naming the same version as 1.6.15.
 
 **1.6.14** stops a window from refusing to close. With the optional AI setup running — or its
 dialog just gone — the close button raised an internal error before the window was destroyed, and
@@ -132,8 +103,7 @@ keyframe found", and a fast cut more than an hour into a long recording is no lo
 the keyframe search reads the file's own duration. Cancelling — Ctrl+C, or closing the window — now
 terminates the encoder instead of leaving it writing a file nobody is waiting for, a missing output
 folder is reported by name instead of ending in a traceback, and a path containing an apostrophe no
-longer breaks the fast-mode concat list. No Store package ships with 1.6.14 either; the signed MSIX
-from **1.6.10** stays the current Store edition.
+longer breaks the fast-mode concat list.
 
 **1.6.13** makes fast mode cut where you asked. A stream copy can only begin at a keyframe, and
 the app used to treat every frame the probe returned as one, so on a VP9 clip a cut at 2.5 s
@@ -168,8 +138,7 @@ percentage with an elapsed and remaining estimate, so a long job no longer looks
 `%LOCALAPPDATA%\MiddleTrimmer\logs\gui.log` records every start, finish, cancel and uncaught error:
 a window that vanishes without a message is no longer a mystery. AI setup also decodes the common
 Windows status codes (`0xC0000135` *a file it needs was not found*, `0xC0000022` *Windows blocked it
-from starting*) and names the remedy instead of showing a bare number. There was no Store package
-for that build either; the signed MSIX from **1.6.10** stays the current Store edition.
+from starting*) and names the remedy instead of showing a bare number.
 
 **1.6.10** put the AI environment under the packaged app's own folder and
 reported a setup that dies before it can speak; **1.6.9** restored both setup buttons in the Store
@@ -189,9 +158,6 @@ complete. **1.6.6** fixed the optional AI noise reduction on loud material, wher
 downmix reached full scale and the pass aborted; it is now fed to the model about 1 dB below full
 scale. **1.6.5** closed the empty band under the drop area and renamed the window and taskbar entry
 to **Middle Trimmer - Cut Video Middle**.
-
-The checksums above describe the current build. Older builds may still be listed on the
-[release page](../../releases/latest); they are kept as published and are not updated.
 
 ## Privacy
 
